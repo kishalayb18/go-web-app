@@ -1,4 +1,4 @@
-# version 2
+# version 3
 FROM golang:1.22.5 as base
 
 WORKDIR /app
