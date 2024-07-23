@@ -73,7 +73,7 @@ jobs:
       with:
         context: ./app
         # working-directory: ./app
-        file: Dockerfile
+        file: ./app/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
 
