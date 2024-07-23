@@ -68,22 +68,14 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # - name: Build and Push action
-    #   uses: docker/build-push-action@v6
-    #   with:
-    #     context: .
-    #     working-directory: ./app
-    #     file: app/Dockerfile
-    #     push: true
-    #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
-
-    - name: Build Docker image
-      run: |
-        docker build -f app/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/my-go-app:${{ github.run_id }} app/
-
-    - name: Push Docker image to Docker Hub
-      run: |
-          docker push my-dockerhub-username/my-go-app:${{ github.run_id }}
+    - name: Build and Push action
+      uses: docker/build-push-action@v6
+      with:
+        context: ./app
+        # working-directory: ./app
+        file: Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
 
   update-newtag-in-helm-chart:
     runs-on: ubuntu-latest
