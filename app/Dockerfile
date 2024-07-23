@@ -40,7 +40,7 @@ FROM golang:1.21 as base
 WORKDIR /app
 
 # Copy the go.mod and go.sum files to the working directory
-COPY app/go.mod ./
+COPY go.mod ./
 
 # Download all the dependencies
 RUN go mod download
