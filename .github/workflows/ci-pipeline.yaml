@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'dev-release*'
+      - 'prod-release*'
     paths-ignore:
       - 'helm/**'
       - 'README.md'
@@ -88,15 +91,30 @@ jobs:
       with:
         token: ${{ secrets.PAT_GITHUB }}
 
+
+    - name: Configure Github
+      run: |
+        git config --global user.email "bhattacharyakishalay@gmail.com"
+        git config --global user.name "Kishalay Bhattacharya"
+
+
+    - name: Determine environment
+      id: determine-env
+      run: |
+        if [[ $GITHUB_REF =~ ^refs/tags/dev-release ]]; then
+          echo "ENV=dev" >> $GITHUB_ENV
+          echo "VALUES_FILE=helm/go-web-chart/values-dev.yaml" >> $GITHUB_ENV
+        elif [[ $GITHUB_REF =~ ^refs/tags/prod-release ]]; then
+          echo "ENV=prod" >> $GITHUB_ENV
+          echo "VALUES_FILE=helm/go-web-chart/values-prod.yaml" >> $GITHUB_ENV
+        fi
+
     - name: Update tag in Helm chart
       run: |
         sed -i 's/tag: .*/tag: "${{github.run_id}}"/' helm/go-web-chart/values.yaml
 
     - name: Commit and push changes
       run: |
-        git config --global user.email "bhattacharyakishalay@gmail.com"
-        git config --global user.name "Kishalay Bhattacharya"
-        git add helm/go-web-chart/values.yaml
-        git commit -m "Update tag in Helm chart"
-        git push
-
+        git add ${{ env.VALUES_FILE }}
+        git commit -m "Update image tag to ${{ github.run_id }} for ${{ env.ENV }} environment"
+        git push origin HEAD:main
