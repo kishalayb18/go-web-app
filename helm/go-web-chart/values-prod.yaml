@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: kishalayb18/go-web-app
-  tag: "v1"
+  tag: "10075920601"
   pullPolicy: IfNotPresent
 
 ingress:
