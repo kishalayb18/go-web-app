@@ -3,7 +3,7 @@ name:  go-web-app
 image:
   repository: kishalayb18/go-web-app
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1"
+  tag: "10071674233"
   pullPolicy: IfNotPresent
 
 ingress:
