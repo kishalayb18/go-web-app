@@ -1,3 +1,3 @@
 replicaCount: 2
 image:
-  tag: "v1"
+  tag: "10075920601"
