@@ -101,10 +101,10 @@ jobs:
     - name: Determine environment
       id: determine-env
       run: |
-        if [[ $GITHUB_REF =~ ^refs/tags/dev-release ]]; then
+        if [[  "${GITHUB_REF}" == refs/tags/dev-release* ]]; then
           echo "ENV=dev" >> $GITHUB_ENV
           echo "VALUES_FILE=helm/go-web-chart/values-dev.yaml" >> $GITHUB_ENV
-        elif [[ $GITHUB_REF =~ ^refs/tags/prod-release ]]; then
+        elif [[  "${GITHUB_REF}" == refs/tags/prod-release* ]]; then
           echo "ENV=prod" >> $GITHUB_ENV
           echo "VALUES_FILE=helm/go-web-chart/values-prod.yaml" >> $GITHUB_ENV
         fi
