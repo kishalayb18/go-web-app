@@ -1,5 +1,7 @@
 replicaCount: 1
-name:  go-web-app-dev
+app:
+  name:  go-web-app-dev
+  env: dev
 image:
   tag: "10091864230"
 

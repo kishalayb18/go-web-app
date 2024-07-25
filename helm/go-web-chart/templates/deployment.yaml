@@ -1,22 +1,22 @@
-# This is a sample deployment manifest file for a simple web application.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.app.name }}
   labels:
-    app: {{ .Values.name }}
+    app: {{ .Values.app.name }}
+    env: {{ .Values.app.env }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      app: {{ .Values.app.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.name }}
+        app: {{ .Values.app.name }}
     spec:
       containers:
-      - name: go-web-app
-        image: kishalayb18/go-web-app:{{ .Values.image.tag }}
+      - name: {{ .Values.app.name }}
+        image: {{ .Values.image.repository}}/{{ .Values.image.name}}:{{ .Values.image.tag }}
         ports:
         - containerPort: 8080

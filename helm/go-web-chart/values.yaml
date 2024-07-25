@@ -1,8 +1,10 @@
 replicaCount: 1
-name:  go-web-app
+app:
+  name:  go-web-app
 image:
   tag: v1
-  repository: kishalayb18/go-web-app
+  repository: kishalayb18
+  name: go-web-app
   pullPolicy: IfNotPresent
 
 ingress:

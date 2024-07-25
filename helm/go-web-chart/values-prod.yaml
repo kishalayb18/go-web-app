@@ -1,5 +1,7 @@
 replicaCount: 2
-name:  go-web-app-prod
+app:
+  name: go-web-app-prod
+  env: prod
 
 image:
   tag: "10081809896"
