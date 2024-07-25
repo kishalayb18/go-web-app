@@ -1,9 +1,12 @@
 replicaCount: 1
 name:  go-web-app
 image:
+  tag: v1
   repository: kishalayb18/go-web-app
   pullPolicy: IfNotPresent
 
+ingress:
+  host: go-web-portfolio.com
 
 service:
   port: 80
