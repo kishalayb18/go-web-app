@@ -2,18 +2,8 @@ replicaCount: 1
 name:  go-web-app
 image:
   repository: kishalayb18/go-web-app
-  tag: "v1"
   pullPolicy: IfNotPresent
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
 
 service:
   port: 80
