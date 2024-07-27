@@ -4,25 +4,29 @@ This is a simple website written in Golang. It uses the `net/http` package to se
 
 ## Running the server locally
 
-To run the server locally, execute the following command:
+1. To run the server locally, execute the following command:
 
 ```bash
 go run main.go
 ```
 
-The server will start on port 8080. You can access it by navigating to `http://localhost:8080/courses` in your web browser
+2. The server will start on port 8080. You can access it by navigating to `http://localhost:8080/courses` in your web browser
 
 ## Deployment Workflow
 
+### CI Steps
+
 1. Write the Dockerfile
 
-2. Setup the `Github action` flow for CI build
+2. Setup the `Github action` pipeline flow for CI build
 
 3. Setup the `tag rules` in the github repository
 
 4. Setup the required tokens, username, password for the Github action flow
 
 5. Set the Github action based on the proper tag push based on the environment
+
+### Prepare the Helm Manifest and Setup the Cluster
 
 6. Configure Helm templates
 
@@ -47,6 +51,8 @@ kubectl create namespace prometheus
 kubectl create namespace grafana
 ```
 
+### Configuring Argo-CD for CD Stage
+
 11. Create the argocd components
 
 ```sh
@@ -68,13 +74,13 @@ kubectl patch svc argocd-server -n argocd -p '{\"spec\": {\"type\": \"LoadBalanc
 13. Configure the `hosts` file
 > For Windows the location : _C:\Windows\System32\drivers\etc\hosts_
 
-run the command
+run the command to get the Node IP
 
 ```sh
 kubectl get nodes -o wide
 ```
 
-or for minikube
+or for minikube run this following command
 
 ```yaml
 minikube ip
@@ -87,16 +93,17 @@ configure the hosts file in the following pattern
 192.168.59.101 go-web-portfolio-dev.com
 ```
 
-NOTE `192.168.59.101` should be replaced with your node ip
+NOTE: `192.168.59.101` should be replaced with your Node IP
 
-14.  Fetch the ardocd secret and decode it with base64 --decode
+14. Fetch the argocd secret and decode it with base64 --decode
 
 ```yaml
 
 ```
 
-15. Open the argocd from browser
-> http://<node ip>:<argocd service nodeport>
+15. Open the argocd from browser 
+
+` http://<node ip>:<argocd service nodeport>`
 
 16. Configure the argocd setup
 
@@ -108,7 +115,9 @@ NOTE `192.168.59.101` should be replaced with your node ip
 - While providing the vaules files provide the values.yaml, values-dev.yaml for the web-dev project
 - Provide the values.yaml, values-prod.yaml for web-prod project
 
-17. Commit all the changes in the Github
+### Trigger the CI/CD
+
+17. Commit all the changes in the Github repository
 
 18. Create a tag with the following patterm
 > mismatch of pattern will not run the pipeline
@@ -127,7 +136,9 @@ git tag prod-release-001-July25release
 git push --tag
 ```
 
-## Setup the Cluster and Workloads Monitoring with Prometheus and Grafana
+You will notice for the specific tag, based on whether it is a dev-release or prod-release, the corresponding values file is getting updated in the Helm folder
+
+### Monitoring Stage: Configure Prometheus on the Cluster
 
 19. Setup the Prometheus configuration on the cluster via Helm charts
 
@@ -148,6 +159,8 @@ Expose Prometheus Service
 ```sh
 kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext -n prometheus
 ```
+
+### Monitoring Stage: Configure Grafana Dashboard for Visualization
 
 20. Setup the Grafana configuration on the Cluster via Helm Charts
 
@@ -174,3 +187,6 @@ kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana
 22. Setup Grafana
 
 23. Configure the dashboards for monitoring
+
+
+## References
