@@ -2,19 +2,19 @@
 
 This is a simple website written in Golang. It uses the `net/http` package to serve HTTP requests.
 
-## Running the server locally
+### Running the server locally
 
-1. To run the server locally, execute the following command:
+- To run the server locally, execute the following command:
 
 ```bash
 go run main.go
 ```
 
-2. The server will start on port 8080. You can access it by navigating to `http://localhost:8080/courses` in your web browser
+- The server will start on port 8080. You can access it by navigating to `http://localhost:8080/courses` in your web browser
 
-## Deployment Workflow
+# Deployment Workflow
 
-### CI Steps
+## CI Steps
 
 1. Write the Dockerfile
 
@@ -26,7 +26,7 @@ go run main.go
 
 5. Set the Github action based on the proper tag push based on the environment
 
-### Prepare the Helm Manifest and Setup the Cluster
+## Prepare the Helm Manifest and Setup the Cluster
 
 6. Configure Helm templates
 
@@ -51,7 +51,7 @@ kubectl create namespace prometheus
 kubectl create namespace grafana
 ```
 
-### Configuring Argo-CD for CD Stage
+## Configuring Argo-CD for CD Stage
 
 11. Create the argocd components
 
@@ -72,9 +72,9 @@ kubectl patch svc argocd-server -n argocd -p '{\"spec\": {\"type\": \"LoadBalanc
 ```
 
 13. Configure the `hosts` file
-> For Windows the location : _C:\Windows\System32\drivers\etc\hosts_
+> For Windows the file path : _C:\Windows\System32\drivers\etc\hosts_
 
-run the command to get the Node IP
+Run the following command to get the Node IP
 
 ```sh
 kubectl get nodes -o wide
@@ -93,7 +93,7 @@ configure the hosts file in the following pattern
 192.168.59.101 go-web-portfolio-dev.com
 ```
 
-NOTE: `192.168.59.101` should be replaced with your Node IP
+> NOTE: `192.168.59.101` should be replaced with your Node IP
 
 14. Fetch the argocd secret and decode it with base64 --decode
 
@@ -103,42 +103,49 @@ NOTE: `192.168.59.101` should be replaced with your Node IP
 
 15. Open the argocd from browser 
 
-` http://<node ip>:<argocd service nodeport>`
+` http://<node ip>:<argocd service nodeport>`<br/>
+
+Then login with the `admin` username and the password that you fetched from the secret
 
 16. Configure the argocd setup
 
 - Create two projects with the name web-go-dev, web-go-prod
 - The sync should be automatic
 - Check the auto-heal option
-- Provide the correct Github URL
-- This will detect the chart folder
+- Provide the correct Github URL where your Helm charts reside
+- The argocd will detect the chart folder path from the repository
 - While providing the vaules files provide the values.yaml, values-dev.yaml for the web-dev project
 - Provide the values.yaml, values-prod.yaml for web-prod project
+- Select the claster and the namespace where the Helm charts will be deployed
+- Click on create
 
-### Trigger the CI/CD
+## Trigger the CI/CD
 
 17. Commit all the changes in the Github repository
 
-18. Create a tag with the following patterm
-> mismatch of pattern will not run the pipeline
+18. Create a git tag with the following pattern
 
-**Pattern of the tag** `<dev|prod>-release-<3 digits>-<tag message>`
+**Pattern of the tag** `<dev|prod>-release-<3 digits>-<tag message>`<br/>
 
-to trigger the pipeline for dev
+> mismatch of the pattern will not run the pipeline
+
+to trigger the pipeline for dev, tag with the following pattern should be pushed
 ```yaml
-git tag dev-release-001-July25release
+git tag dev-release-001-Julyrelease
 git push --tag
 ```
 
-to trigger the pipeline for prod
+to trigger the pipeline for prod, tag with the following pattern should be pushed
 ```yaml
-git tag prod-release-001-July25release
+git tag prod-release-001-Julyrelease
 git push --tag
 ```
 
-You will notice for the specific tag, based on whether it is a dev-release or prod-release, the corresponding values file is getting updated in the Helm folder
+- Pushed git tag will trigger the CI build via github actions, which will build a new image
+- You will notice for the specific git tag, based on whether it is a `dev-release` or `prod-release` the corresponding values.yaml file is getting updated in the Helm folder
+- The configured argocd will detect the changes and deploy automatically in the cluster
 
-### Monitoring Stage: Configure Prometheus on the Cluster
+## Monitoring Stage: Configure Prometheus on the Cluster
 
 19. Setup the Prometheus configuration on the cluster via Helm charts
 
@@ -160,7 +167,7 @@ Expose Prometheus Service
 kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext -n prometheus
 ```
 
-### Monitoring Stage: Configure Grafana Dashboard for Visualization
+## Monitoring Stage: Configure Grafana Dashboard for Visualization
 
 20. Setup the Grafana configuration on the Cluster via Helm Charts
 
@@ -188,5 +195,8 @@ kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana
 
 23. Configure the dashboards for monitoring
 
+Workflow Diagram
+![flow](webgo-workflow.svg)
 
 ## References
+[The go-web-app by Abhishek Veermalla](https://github.com/iam-veeramalla/go-web-app-devops)
