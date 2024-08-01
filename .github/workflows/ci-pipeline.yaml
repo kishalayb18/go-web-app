@@ -8,8 +8,9 @@ on:
     # branches:
     #   - main
     tags:
-      - 'dev-release*'
-      - 'prod-release*'
+      - '^(dev|prod)-release\\d{3}-.{0,30}$'
+      # - 'dev-release*'
+      # - 'prod-release*'
     paths-ignore:
       - 'helm/**'
       - 'README.md'
@@ -24,9 +25,10 @@ jobs:
 
     - name: Validate tag
       run: |
-        TAG_PATTERN="^(dev|prod)-release\\d{3}-.{0,30}$"
+        TAG_PATTERN='^(dev|prod)-release\\d{3}-.{0,30}$'
         if [[ ! $GITHUB_REF =~ refs/tags/$TAG_PATTERN ]]; then
-          # echo "$GITHUB_REF"
+          echo "$GITHUB_REF"
+          echo "$TAG_PATTERN"
           echo "Error: Tag does not match the required pattern."
           echo "Tag must match the pattern: $TAG_PATTERN"
           exit 1
