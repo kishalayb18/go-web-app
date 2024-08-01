@@ -17,6 +17,18 @@ on:
 jobs:
   validate-tag:
     runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Validate tag
+      run: |
+        TAG_PATTERN="^(dev|prod)-release\\d{3}-.{0,30}$"
+        if [[ ! $GITHUB_REF =~ $TAG_PATTERN ]]; then
+          echo "Error: Tag does not match the required pattern."
+          echo "Tag must match the pattern: $TAG_PATTERN"
+          exit 1
+        fi
     
   build:
     runs-on: ubuntu-latest
