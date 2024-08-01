@@ -25,8 +25,8 @@ jobs:
     - name: Validate tag
       run: |
         TAG_PATTERN="^(dev|prod)-release\\d{3}-.{0,30}$"
-        if [[ ! $GITHUB_REF =~ $TAG_PATTERN ]]; then
-          echo "$GITHUB_REF"
+        if [[ ! $GITHUB_REF =~ refs/tags/$TAG_PATTERN ]]; then
+          # echo "$GITHUB_REF"
           echo "Error: Tag does not match the required pattern."
           echo "Tag must match the pattern: $TAG_PATTERN"
           exit 1
